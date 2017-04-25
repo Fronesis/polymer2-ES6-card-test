@@ -1,0 +1,53 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../contact-fav-icon/contact-fav-icon.html">
+
+<dom-module id="contact-item">
+  <template>
+  <style>
+    paper-card {
+      width: 100%;
+      padding: 10px;
+      text-align: center;
+    }
+
+    img {
+      float: left;
+      border-radius: 100%;
+    }
+
+    .contact-name {
+      display: inline-block;
+      margin-top: 15px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 30%;
+    }
+
+  </style>
+    <paper-card>
+      <div>
+        <img src="{{user.picture.thumbnail}}">
+      </div>
+      <div class="contact-name">{{user.name.first}}</div>
+      <contact-fav-icon user="{{user}}"></contact-fav-icon>
+    </paper-card>
+  </template>
+
+  <script>
+    class ContactItem {
+      beforeRegister() {
+        this.is = 'contact-item';
+        this.properties = {
+          user: {
+            type: Object
+          }
+        };
+      }
+    }
+
+    Polymer(ContactItem);
+
+  </script>
+</dom-module>

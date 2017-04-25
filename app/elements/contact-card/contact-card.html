@@ -1,0 +1,168 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+
+<dom-module id="contact-card">
+  <template>
+
+     <style>
+      :host {
+        width: 200px;
+      }
+      :host.removed .cards{
+        transform: scale(0) !important;
+        transition: transform 0.5s ease;
+      }
+      :host([favorite]) .cards{
+        background: orange;
+        transform: scale(1);
+        transition: all 1s ease;
+      }
+      :host([favorite]) iron-icon {
+        display: block;
+      }
+     iron-icon {
+      display: none;
+      left: 0;
+      position: absolute;
+      top: 0;
+      fill: orange;
+     }
+
+     .user-name {
+      position: absolute;
+      bottom: 3px;
+      color: white;
+      right: 3px;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-shadow: 1px 1px 3px #585858;
+     }
+
+     .user-mail {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 125px;
+     }
+
+     .cards {
+      margin: 2px;
+      transform: scale(0.95);
+     }
+      .card-content {
+        display: flex;
+        text-align: center;
+        padding: 0;
+        max-width: 125px;
+        overflow: hidden;
+      }
+
+      .card-actions {
+        padding:0;
+      }
+
+      .icon-check {
+        color: green;
+      }
+      .icon-clear {
+        color: red;
+        float: right;
+      }
+      .card-content p {
+        margin: 0;
+      }
+
+      img {
+        width: 100%;
+        max-height: 120px;
+        max-width: 125px;
+      }
+
+      paper-button {
+        width: 15%;
+      }
+    </style>
+
+    <paper-dialog id="dialog">
+          <h1 class="page-title" tabindex="-1">{{user.name.title}} {{user.name.first}}</h1>
+          <img src="{{user.picture.large}}">
+          <h2 class="page-subtitle">Location</h2>
+          <p>Street: {{user.location.street}}</p>
+          <p>City: {{user.location.city}}</p>
+          <p>State: {{user.location.state}}</p>
+          <p>Postcode: {{user.location.postcode}}</p>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm autofocus>Accept</paper-button>
+      </div>
+    </paper-dialog>
+
+    <paper-card class="cards">
+      <div class="card-content" data-route="users">
+        <a href$="{{baseUrl}}users/{{user.name.title}},{{user.name.first}}">
+          <img src="{{user.picture.large}}">
+        </a>
+        <iron-icon icon="star"></iron-icon>
+        <p class="user-name">{{user.name.first}}</p>
+      </div>
+        <div class="card-actions">
+          <template is="dom-if" if="{{!user.favorite}}">
+            <paper-icon-button class="icon-check" icon="check" on-tap="_markAsFavorite"></paper-icon-button>
+            <paper-icon-button class="icon-clear" on-tap="_removeContact" icon="clear">Nope</paper-icon-button>
+            <paper-button raised on-tap="_openDialog">More Details</paper-button>
+          </template>
+          <template is="dom-if" if="{{user.favorite}}">
+            <paper-icon-button class="icon-clear" on-tap="_removeContact" icon="clear">Nope</paper-icon-button>
+          </template>
+        </div>
+    </paper-card>
+
+
+
+
+
+  </template>
+  <script>
+  class ContacCard {
+    beforeRegister() {
+      this.is = 'contact-card';
+      this.properties = {
+        user: {
+          type: Object
+        }
+      };
+      this.observers = [
+        '_userFavoriteChange(user.favorite)'
+      ]
+    }
+
+    _removeContact() {
+      this.toggleClass('removed');
+      setTimeout(function(){
+        this.fire('remove-card', {user: this.user});
+        this.toggleClass('removed');
+      }.bind(this), 500);
+    }
+
+    _markAsFavorite(){
+      this.set('user.favorite', !this.user.favorite);
+    }
+
+    _userFavoriteChange(fav){
+      this.toggleAttribute('favorite', fav);
+    }
+
+    _openDialog(){
+      document.getElementById("dialog").open();
+    }
+
+  }
+
+  Polymer(ContacCard);
+
+  </script>
+</dom-module>

@@ -1,0 +1,89 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../contact-card/contact-card.html">
+<link rel="import" href="../contact-item/contact-item.html">
+
+<dom-module id="contacts-app">
+  <template>
+    <style>
+    paper-button {
+      width: 100%;
+      display: inline-block;
+    }
+    paper-input {
+      padding: 10px;
+      width: calc(100% - 30px);
+    }
+    paper-header-panel {
+      background: #4468AF;
+      color: white;
+    }
+    .header-title {
+      margin: 10px;
+      display: inline-block;
+    }
+    .container {
+      margin: 5px 20px;
+    }
+    .toggle-views {
+      float: right;
+    }
+    .main-view {
+      float: left;
+      width: 80%;
+    }
+    .secondary-view {
+      float: left;
+      width: 20%;
+    }
+    @media (max-width: 768px) {
+      .secondary-view {
+        display: none;
+      }
+      .main-view {
+        width: 100%;
+      }
+    }
+    </style>
+    <iron-ajax
+      auto
+      url="https://randomuser.me/api/?results={{cardsNumber}}"
+      last-response="{{users}}"
+      handle-as="json">
+    </iron-ajax>
+          <template id="mainView" is="dom-repeat" items="{{users.results}}">
+            <contact-card user="{{item}}"></contact-card>
+          </template>
+  </template>
+  <script>
+    class ContactsApp {
+      beforeRegister() {
+        this.is = 'contacts-app';
+        this.properties = {
+          cardsNumber: {
+            type: Number,
+            value: 10
+          },
+          users: {
+            type: Array
+          }
+        };
+        this.listeners = {
+          'remove-card': '_removeCard'
+        };
+      }
+      _removeCard(ev, param) {
+        var index = this.users.results.indexOf(param.user);
+        this.users.results.splice(index,1);
+        this.$.mainView.render();
+        //this.$.asideView.render();
+      }
+    }
+
+    Polymer(ContactsApp);
+  </script>
+</dom-module>
