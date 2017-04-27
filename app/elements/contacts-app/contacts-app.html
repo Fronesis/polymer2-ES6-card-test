@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../../bower_components/paper-header-panel/paper-header-panel.html">
 <link rel="import" href="../contact-card/contact-card.html">
+<link rel="import" href="../contact-dialog/contact-dialog.html">
 <link rel="import" href="../contact-item/contact-item.html">
 
 <dom-module id="contacts-app">
@@ -56,6 +57,7 @@
       handle-as="json">
     </iron-ajax>
           <template id="mainView" is="dom-repeat" items="{{users.results}}">
+            <contact-dialog user="{{item}}"></contact-dialog>
             <contact-card user="{{item}}"></contact-card>
           </template>
   </template>

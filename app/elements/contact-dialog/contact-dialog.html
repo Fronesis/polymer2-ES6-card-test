@@ -5,7 +5,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 
-<dom-module id="contact-card">
+<dom-module id="contact-dialog">
   <template>
 
      <style>
@@ -63,7 +63,6 @@
 
       .card-actions {
         padding:0;
-        max-width: 125px;
       }
 
       .icon-check {
@@ -77,82 +76,52 @@
         margin: 0;
       }
 
+      .page-title {
+        text-transform: capitalize;
+      }
+
       img {
         width: 100%;
         max-height: 120px;
         max-width: 125px;
       }
 
-      .dialog-button {
-        float: left;
-        width: 96%;
-        margin: 0.3em 2%;
+      paper-button {
+        width: 93%;
         font-size: 0.9em;
         display: block;
       }
     </style>
 
-    <paper-card class="cards">
-      <div class="card-content" data-route="users">
-        <a href$="{{baseUrl}}users/{{user.name.title}},{{user.name.first}}">
+    <paper-dialog id="dialog{{user.id.value}}">
+          <h1 class="page-title" tabindex="-1">{{user.name.title}} {{user.name.first}}</h1>
           <img src="{{user.picture.large}}">
-        </a>
-        <iron-icon icon="star"></iron-icon>
-        <p class="user-name">{{user.name.first}}</p>
+          <h2 class="page-subtitle">Location</h2>
+          <p>Street: {{user.location.street}}</p>
+          <p>City: {{user.location.city}}</p>
+          <p>State: {{user.location.state}}</p>
+          <p>Postcode: {{user.location.postcode}}</p>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm autofocus>Accept</paper-button>
       </div>
-        <div class="card-actions">
-          <template is="dom-if" if="{{!user.favorite}}">
-            <paper-icon-button class="icon-check" icon="check" on-tap="_markAsFavorite"></paper-icon-button>
-            <paper-icon-button class="icon-clear" on-tap="_removeContact" icon="clear">Nope</paper-icon-button>
-            <paper-button class="dialog-button" raised on-tap="_openDialog">More Details</paper-button>
-          </template>
-          <template is="dom-if" if="{{user.favorite}}">
-            <paper-icon-button class="icon-clear" on-tap="_removeContact" icon="clear">Nope</paper-icon-button>
-            <paper-button class="dialog-button" raised on-tap="_openDialog">More Details</paper-button>
-          </template>
-        </div>
-    </paper-card>
+    </paper-dialog>
 
   </template>
   <script>
-  class ContacCard {
+  class ContacDialog {
     beforeRegister() {
-      this.is = 'contact-card';
+      this.is = 'contact-dialog';
       this.properties = {
         user: {
           type: Object
         }
       };
-      this.observers = [
-        '_userFavoriteChange(user.favorite)'
-      ]
-    }
-
-    _removeContact() {
-      this.toggleClass('removed');
-      setTimeout(function(){
-        this.fire('remove-card', {user: this.user});
-        this.toggleClass('removed');
-      }.bind(this), 500);
-    }
-
-    _markAsFavorite(){
-      this.set('user.favorite', !this.user.favorite);
-    }
-
-    _userFavoriteChange(fav){
-      this.toggleAttribute('favorite', fav);
-    }
-
-    _openDialog(){
-      let unid = "dialog" + this.user.id.value;
-      console.log(unid);
-      document.getElementById(unid).open();
     }
 
   }
 
-  Polymer(ContacCard);
+  Polymer(ContacDialog);
 
   </script>
 </dom-module>
